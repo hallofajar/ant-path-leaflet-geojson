@@ -49,18 +49,26 @@
 			const features = data.features;
 			$.each(features, function (key, value) {
 				let coordinates = value.geometry.coordinates;
+				let properties = value.properties;
+
+				let popup = `<b>${properties.name}</b><br>Length: ${properties.length_km} Km`;
 
 				// Reverse Coordinate
 				coordinate = coordinates.map((item) => {
 					return [item[1], item[0]];
 				});
-				// console.log(coordinate);
 
 				// Create Polyline Ant Path
 				let antpath = new L.Polyline.AntPath(
 					coordinate,
 					optionsPath
 				).addTo(map);
+
+				// Tooltip
+				antpath.bindTooltip(properties.name, {sticky: true});
+
+				// Popup
+				antpath.bindPopup(popup);
 
 				// fit bounds to the polyline
 				map.fitBounds(antpath.getBounds());
